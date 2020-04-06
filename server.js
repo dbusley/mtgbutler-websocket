@@ -5,7 +5,7 @@ const {get} = require('./client.js');
 
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocket.Server({server});
+const wss = new WebSocket.Server({server: server, path: '/websocket'});
 
 wss.on('connection', (ws) => {
     ws.on('message', (message) => {
