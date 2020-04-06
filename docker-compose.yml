@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    depends_on:
+      - api
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./:/usr/src/app
+    environment:
+      API_BASE_URL: http://api:8080/api/
+    entrypoint:
+      [ "npm", "run", "dev" ]
+  api:
+    image: "mtgbutler-api"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db/mtgbutler?serverTimezone=UTC&useLegacyDatetimeCode=false
+      SPRING_DATASOURCE_PASSWORD: local
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+    ports:
+      - "80:8080"
+    depends_on:
+      - db
+  db:
+    image: "mysql:latest"
+    ports:
+      - "3307:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: local
+      MYSQL_DATABASE: mtgbutler
+
+volumes:
+  dbdata:
